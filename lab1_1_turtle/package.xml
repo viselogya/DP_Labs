@@ -1,0 +1,15 @@
+<?xml version="1.0"?>
+<package format="2">
+  <name>lab1_1_turtle</name>
+  <version>1.0.0</version>
+  <description>Лабораторная 1.1: знакомство со средой ROS, рисование инициалов в TurtleSim</description>
+  <maintainer email="4205353@gmail.com">viselogya</maintainer>
+  <license>MIT</license>
+
+  <buildtool_depend>catkin</buildtool_depend>
+
+  <exec_depend>turtlesim</exec_depend>
+  <exec_depend>rosservice</exec_depend>
+  <exec_depend>rostopic</exec_depend>
+  <exec_depend>geometry_msgs</exec_depend>
+</package>

@@ -1,0 +1,20 @@
+<?xml version="1.0"?>
+<!-- Лабораторная 1.4: Gazebo с миром arm_target.world и модель манипулятора в нём. -->
+<launch>
+  <arg name="paused" default="false"/>
+  <arg name="gui" default="true"/>
+
+  <include file="$(find gazebo_ros)/launch/empty_world.launch">
+    <arg name="world_name" value="$(find lab1_4_arm_gazebo)/worlds/arm_target.world"/>
+    <arg name="paused" value="$(arg paused)"/>
+    <arg name="gui" value="$(arg gui)"/>
+    <arg name="use_sim_time" value="true"/>
+  </include>
+
+  <!-- описание робота в robot_description -->
+  <include file="$(find lab1_4_arm_description)/launch/upload.launch"/>
+
+  <!-- появление модели в Gazebo -->
+  <node name="urdf_spawner" pkg="gazebo_ros" type="spawn_model" respawn="false" output="screen"
+        args="-urdf -model arm -param robot_description"/>
+</launch>

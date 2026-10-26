@@ -1,0 +1,7 @@
+<?xml version="1.0"?>
+<!-- Вид 2: вызов сборочного макроса с другими начальными положениями звеньев:
+     колёса повёрнуты на 45 градусов, ротор - на 90 градусов. -->
+<robot name="platform_pose" xmlns:xacro="http://www.ros.org/wiki/xacro">
+  <xacro:include filename="$(find lab1_3_xacro_platform)/urdf/platform.xacro"/>
+  <xacro:platform wheel_angle="${PI/4}" rotor_angle="${PI/2}"/>
+</robot>

@@ -1,0 +1,66 @@
+<?xml version="1.0"?>
+<!-- Лабораторная 1.3. Общие константы, материалы и макросы инерции.
+     Демонстрирует: константы (xacro:property), математические выражения ${...}. -->
+<robot xmlns:xacro="http://www.ros.org/wiki/xacro">
+
+  <!-- ===== Константы ===== -->
+  <xacro:property name="PI" value="3.14159265"/>
+
+  <!-- корпус -->
+  <xacro:property name="body_l" value="0.50"/>
+  <xacro:property name="body_w" value="0.30"/>
+  <xacro:property name="body_h" value="0.12"/>
+  <xacro:property name="body_z" value="0.10"/>   <!-- высота центра корпуса над землёй -->
+  <xacro:property name="body_m" value="4.0"/>
+
+  <!-- надстройка (кабина) в передней части корпуса -->
+  <xacro:property name="cabin_l" value="0.16"/>
+  <xacro:property name="cabin_w" value="0.22"/>
+  <xacro:property name="cabin_h" value="0.10"/>
+
+  <!-- колёса -->
+  <xacro:property name="wheel_r" value="0.08"/>
+  <xacro:property name="wheel_t" value="0.05"/>
+  <xacro:property name="wheel_m" value="0.5"/>
+  <xacro:property name="wheel_x" value="${body_l/2 - wheel_r - 0.01}"/>       <!-- смещение осей вперёд/назад -->
+  <xacro:property name="wheel_y" value="${body_w/2 + wheel_t/2 + 0.005}"/>   <!-- смещение колёс влево/вправо -->
+  <xacro:property name="wheel_z" value="${wheel_r - body_z}"/>               <!-- ось колеса относительно центра корпуса -->
+
+  <!-- задний вращающийся цилиндр (ротор) -->
+  <xacro:property name="rotor_r" value="0.05"/>
+  <xacro:property name="rotor_len" value="0.20"/>
+  <xacro:property name="rotor_m" value="0.6"/>
+
+  <!-- ===== Материалы ===== -->
+  <material name="grey">   <color rgba="0.5 0.5 0.5 1"/>   </material>
+  <material name="black">  <color rgba="0.1 0.1 0.1 1"/>   </material>
+  <material name="white">  <color rgba="0.95 0.95 0.95 1"/> </material>
+  <material name="orange"> <color rgba="1.0 0.55 0.0 1"/>  </material>
+  <material name="blue">   <color rgba="0.1 0.3 0.85 1"/>  </material>
+  <material name="green">  <color rgba="0.1 0.7 0.2 1"/>   </material>
+  <material name="red">    <color rgba="0.85 0.1 0.1 1"/>  </material>
+  <material name="yellow"> <color rgba="1.0 0.85 0.0 1"/>  </material>
+
+  <!-- ===== Макросы инерции (математические выражения) ===== -->
+  <xacro:macro name="box_inertial" params="m x y z *origin">
+    <inertial>
+      <xacro:insert_block name="origin"/>
+      <mass value="${m}"/>
+      <inertia ixx="${m*(y*y + z*z)/12}" ixy="0" ixz="0"
+               iyy="${m*(x*x + z*z)/12}" iyz="0"
+               izz="${m*(x*x + y*y)/12}"/>
+    </inertial>
+  </xacro:macro>
+
+  <!-- цилиндр с осью вдоль z собственной системы координат -->
+  <xacro:macro name="cylinder_inertial" params="m r h *origin">
+    <inertial>
+      <xacro:insert_block name="origin"/>
+      <mass value="${m}"/>
+      <inertia ixx="${m*(3*r*r + h*h)/12}" ixy="0" ixz="0"
+               iyy="${m*(3*r*r + h*h)/12}" iyz="0"
+               izz="${m*r*r/2}"/>
+    </inertial>
+  </xacro:macro>
+
+</robot>

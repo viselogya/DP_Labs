@@ -1,0 +1,7 @@
+<?xml version="1.0"?>
+<!-- Вид 3: другая раскраска + другие начальные положения + платформа без надстройки. -->
+<robot name="platform_colors_pose" xmlns:xacro="http://www.ros.org/wiki/xacro">
+  <xacro:include filename="$(find lab1_3_xacro_platform)/urdf/platform.xacro"/>
+  <xacro:platform body_color="blue" wheel_color="red" rotor_color="yellow"
+                  wheel_angle="${-PI/3}" rotor_angle="${PI}" with_cabin="false"/>
+</robot>

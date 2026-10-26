@@ -1,0 +1,10 @@
+<?xml version="1.0"?>
+<!-- Лабораторная 1.4: всё одной командой - Gazebo + модель + контроллеры.
+     cycle:=true - сразу запустить цикловое движение и графики rqt_plot. -->
+<launch>
+  <arg name="cycle" default="false"/>
+
+  <include file="$(find lab1_4_arm_gazebo)/launch/gazebo.launch"/>
+  <include file="$(find lab1_4_arm_control)/launch/arm_control.launch"/>
+  <include if="$(arg cycle)" file="$(find lab1_4_arm_control)/launch/cycle.launch"/>
+</launch>

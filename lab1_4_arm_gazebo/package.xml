@@ -1,0 +1,14 @@
+<?xml version="1.0"?>
+<package format="2">
+  <name>lab1_4_arm_gazebo</name>
+  <version>1.0.0</version>
+  <description>Лабораторная 1.4: мир Gazebo со сферой-мишенью и запуск модели манипулятора</description>
+  <maintainer email="4205353@gmail.com">viselogya</maintainer>
+  <license>MIT</license>
+
+  <buildtool_depend>catkin</buildtool_depend>
+
+  <exec_depend>gazebo_ros</exec_depend>
+  <exec_depend>lab1_4_arm_description</exec_depend>
+  <exec_depend>lab1_4_arm_control</exec_depend>
+</package>

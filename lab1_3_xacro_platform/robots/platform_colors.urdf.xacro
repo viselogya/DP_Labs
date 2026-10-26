@@ -1,0 +1,6 @@
+<?xml version="1.0"?>
+<!-- Вид 1: вызов сборочного макроса с другой цветовой раскраской. -->
+<robot name="platform_colors" xmlns:xacro="http://www.ros.org/wiki/xacro">
+  <xacro:include filename="$(find lab1_3_xacro_platform)/urdf/platform.xacro"/>
+  <xacro:platform body_color="green" cabin_color="yellow" wheel_color="grey" rotor_color="red"/>
+</robot>

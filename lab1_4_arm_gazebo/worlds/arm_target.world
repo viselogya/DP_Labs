@@ -1,0 +1,40 @@
+<?xml version="1.0"?>
+<!-- Лабораторная 1.4. Мир для манипулятора: земля, солнце и красная сфера-мишень.
+     Координаты сферы совпадают с лабораторной 1.2: в конечном положении
+     манипулятора сфера находится между губками схвата.
+     Сфера статична и без коллизий - схват проходит «сквозь» неё, ничего не сбивая. -->
+<sdf version="1.6">
+  <world name="default">
+    <include>
+      <uri>model://ground_plane</uri>
+    </include>
+    <include>
+      <uri>model://sun</uri>
+    </include>
+
+    <model name="target_sphere">
+      <static>true</static>
+      <pose>0.4052 0.2853 0.1109 0 0 0</pose>
+      <link name="link">
+        <visual name="visual">
+          <geometry>
+            <sphere><radius>0.02</radius></sphere>
+          </geometry>
+          <material>
+            <script>
+              <uri>file://media/materials/scripts/gazebo.material</uri>
+              <name>Gazebo/Red</name>
+            </script>
+          </material>
+        </visual>
+      </link>
+    </model>
+
+    <gui fullscreen="0">
+      <camera name="user_camera">
+        <pose>1.6 1.4 1.0 0 0.35 -2.4</pose>
+        <view_controller>orbit</view_controller>
+      </camera>
+    </gui>
+  </world>
+</sdf>

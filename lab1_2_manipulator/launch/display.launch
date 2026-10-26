@@ -1,0 +1,18 @@
+<?xml version="1.0"?>
+<!-- Лабораторная 1.2: отображение манипулятора в Rviz.
+     gui:=true  - ручное управление шарнирами через joint_state_publisher_gui
+     gui:=false - шарнирами никто не управляет (используется move.launch) -->
+<launch>
+  <arg name="gui" default="true"/>
+  <arg name="rviz" default="true"/>
+
+  <param name="robot_description" textfile="$(find lab1_2_manipulator)/urdf/manipulator.urdf"/>
+
+  <node if="$(arg gui)" name="joint_state_publisher_gui" pkg="joint_state_publisher_gui"
+        type="joint_state_publisher_gui"/>
+
+  <node name="robot_state_publisher" pkg="robot_state_publisher" type="robot_state_publisher"/>
+
+  <node if="$(arg rviz)" name="rviz" pkg="rviz" type="rviz"
+        args="-d $(find lab1_2_manipulator)/rviz/manipulator.rviz"/>
+</launch>

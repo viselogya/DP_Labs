@@ -1,0 +1,16 @@
+<?xml version="1.0"?>
+<package format="2">
+  <name>lab1_2_manipulator</name>
+  <version>1.0.0</version>
+  <description>Лабораторная 1.2: URDF-модель робота-манипулятора (5 степеней свободы, угловая система координат) в Rviz</description>
+  <maintainer email="4205353@gmail.com">viselogya</maintainer>
+  <license>MIT</license>
+
+  <buildtool_depend>catkin</buildtool_depend>
+
+  <exec_depend>rospy</exec_depend>
+  <exec_depend>sensor_msgs</exec_depend>
+  <exec_depend>robot_state_publisher</exec_depend>
+  <exec_depend>joint_state_publisher_gui</exec_depend>
+  <exec_depend>rviz</exec_depend>
+</package>

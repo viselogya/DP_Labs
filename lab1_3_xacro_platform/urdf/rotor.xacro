@@ -1,0 +1,36 @@
+<?xml version="1.0"?>
+<!-- Лабораторная 1.3. Задний цилиндр, вращающийся вокруг продольной оси платформы (x).
+     angle - начальный угол поворота, рад. Лопасть показывает вращение. -->
+<robot xmlns:xacro="http://www.ros.org/wiki/xacro">
+
+  <xacro:macro name="rotor" params="color angle:=0">
+    <joint name="rotor_joint" type="continuous">
+      <parent link="base_link"/>
+      <child link="rotor_link"/>
+      <origin xyz="${-body_l/2} 0 0" rpy="${angle} 0 0"/>
+      <axis xyz="1 0 0"/>
+    </joint>
+
+    <link name="rotor_link">
+      <visual>
+        <origin xyz="${-rotor_len/2} 0 0" rpy="0 ${PI/2} 0"/>
+        <geometry> <cylinder radius="${rotor_r}" length="${rotor_len}"/> </geometry>
+        <material name="${color}"/>
+      </visual>
+      <!-- лопасть -->
+      <visual>
+        <origin xyz="${-rotor_len/2} 0 ${rotor_r}" rpy="0 0 0"/>
+        <geometry> <box size="${rotor_len*0.8} 0.01 0.03"/> </geometry>
+        <material name="white"/>
+      </visual>
+      <collision>
+        <origin xyz="${-rotor_len/2} 0 0" rpy="0 ${PI/2} 0"/>
+        <geometry> <cylinder radius="${rotor_r}" length="${rotor_len}"/> </geometry>
+      </collision>
+      <xacro:cylinder_inertial m="${rotor_m}" r="${rotor_r}" h="${rotor_len}">
+        <origin xyz="${-rotor_len/2} 0 0" rpy="0 ${PI/2} 0"/>
+      </xacro:cylinder_inertial>
+    </link>
+  </xacro:macro>
+
+</robot>

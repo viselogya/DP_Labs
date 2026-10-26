@@ -1,0 +1,17 @@
+<?xml version="1.0"?>
+<!-- Лабораторная 1.4: автоматическое цикловое движение манипулятора между стартовым
+     положением и положением захвата сферы (то же, что выражения в rqt Message Publisher).
+     Начальное и конечное положения берутся из лабораторной 1.2. -->
+<launch>
+  <arg name="speed" default="0.5"/>
+
+  <node name="cycle_motion" pkg="lab1_4_arm_control" type="cycle_motion.py" output="screen">
+    <rosparam command="load" file="$(find lab1_2_manipulator)/config/joints.yaml"/>
+    <param name="rate" value="100"/>
+    <param name="speed" value="$(arg speed)"/>
+  </node>
+
+  <!-- графики положений шарниров -->
+  <node name="rqt_plot" pkg="rqt_plot" type="rqt_plot"
+        args="/arm/joint_states/position[0] /arm/joint_states/position[1] /arm/joint_states/position[2] /arm/joint_states/position[3] /arm/joint_states/position[4]"/>
+</launch>

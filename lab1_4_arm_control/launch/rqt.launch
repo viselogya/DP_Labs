@@ -1,0 +1,6 @@
+<?xml version="1.0"?>
+<!-- Лабораторная 1.4: rqt_gui для циклового управления (плагин Message Publisher)
+     и построения графиков (плагин Plot). Настройка плагинов описана в README. -->
+<launch>
+  <node name="rqt_gui" pkg="rqt_gui" type="rqt_gui" output="screen"/>
+</launch>

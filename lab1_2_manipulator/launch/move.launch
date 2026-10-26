@@ -1,0 +1,20 @@
+<?xml version="1.0"?>
+<!-- Лабораторная 1.2, п. 5: Rviz + скрипт, плавно переводящий шарниры
+     из начального положения в положение захвата сферы.
+     loop:=true - двигаться туда-обратно непрерывно. -->
+<launch>
+  <arg name="loop" default="false"/>
+  <arg name="steps" default="50"/>
+  <arg name="rate" default="10"/>
+
+  <include file="$(find lab1_2_manipulator)/launch/display.launch">
+    <arg name="gui" value="false"/>
+  </include>
+
+  <node name="move_to_target" pkg="lab1_2_manipulator" type="move_to_target.py" output="screen">
+    <rosparam command="load" file="$(find lab1_2_manipulator)/config/joints.yaml"/>
+    <param name="loop" value="$(arg loop)"/>
+    <param name="steps" value="$(arg steps)"/>
+    <param name="rate" value="$(arg rate)"/>
+  </node>
+</launch>

@@ -1,0 +1,6 @@
+<?xml version="1.0"?>
+<!-- Загрузка описания манипулятора в параметр robot_description. -->
+<launch>
+  <param name="robot_description"
+         command="$(find xacro)/xacro '$(find lab1_4_arm_description)/urdf/arm.urdf.xacro'"/>
+</launch>

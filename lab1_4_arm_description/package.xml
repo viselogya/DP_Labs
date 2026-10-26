@@ -1,0 +1,22 @@
+<?xml version="1.0"?>
+<package format="2">
+  <name>lab1_4_arm_description</name>
+  <version>1.0.0</version>
+  <description>Лабораторная 1.4: описание манипулятора для Gazebo (трансмиссии, плагин gazebo_ros_control)</description>
+  <maintainer email="4205353@gmail.com">viselogya</maintainer>
+  <license>MIT</license>
+
+  <buildtool_depend>catkin</buildtool_depend>
+
+  <exec_depend>xacro</exec_depend>
+  <exec_depend>robot_state_publisher</exec_depend>
+  <exec_depend>joint_state_publisher_gui</exec_depend>
+  <exec_depend>rviz</exec_depend>
+  <exec_depend>gazebo_ros</exec_depend>
+  <exec_depend>gazebo_ros_control</exec_depend>
+
+  <export>
+    <!-- чтобы Gazebo находил meshes/gripper.stl по ссылке package://lab1_4_arm_description/... -->
+    <gazebo_ros gazebo_model_path="${prefix}/.."/>
+  </export>
+</package>

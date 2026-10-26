@@ -1,0 +1,6 @@
+<?xml version="1.0"?>
+<!-- Базовый вид платформы: параметры сборочного макроса по умолчанию. -->
+<robot name="platform" xmlns:xacro="http://www.ros.org/wiki/xacro">
+  <xacro:include filename="$(find lab1_3_xacro_platform)/urdf/platform.xacro"/>
+  <xacro:platform/>
+</robot>

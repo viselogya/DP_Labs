@@ -1,0 +1,33 @@
+<?xml version="1.0"?>
+<!-- Лабораторная 1.3. Сборочный XACRO-скрипт колёсной платформы (вариант б, рис. 2):
+     корпус + надстройка, 4 одинаковых колеса, задний вращающийся цилиндр.
+
+     Все элементы подключаются из отдельных файлов через $(find ...)
+     и собираются вызовом макроса platform с параметрами:
+       body_color, cabin_color, wheel_color, rotor_color - цвета элементов
+       wheel_angle - начальный угол поворота колёс, рад
+       rotor_angle - начальный угол поворота ротора, рад
+       with_cabin  - нужна ли надстройка -->
+<robot xmlns:xacro="http://www.ros.org/wiki/xacro">
+
+  <xacro:include filename="$(find lab1_3_xacro_platform)/urdf/common.xacro"/>
+  <xacro:include filename="$(find lab1_3_xacro_platform)/urdf/chassis.xacro"/>
+  <xacro:include filename="$(find lab1_3_xacro_platform)/urdf/wheel.xacro"/>
+  <xacro:include filename="$(find lab1_3_xacro_platform)/urdf/rotor.xacro"/>
+
+  <xacro:macro name="platform"
+               params="body_color:=orange cabin_color:=blue wheel_color:=black rotor_color:=grey
+                       wheel_angle:=0 rotor_angle:=0 with_cabin:=true">
+
+    <xacro:chassis body_color="${body_color}" cabin_color="${cabin_color}" with_cabin="${with_cabin}"/>
+
+    <!-- макрос колеса вызывается 4 раза: передние/задние (fb), левые/правые (lr) -->
+    <xacro:wheel prefix="front_left"  fb="1"  lr="1"  color="${wheel_color}" angle="${wheel_angle}"/>
+    <xacro:wheel prefix="front_right" fb="1"  lr="-1" color="${wheel_color}" angle="${wheel_angle}"/>
+    <xacro:wheel prefix="rear_left"   fb="-1" lr="1"  color="${wheel_color}" angle="${wheel_angle}"/>
+    <xacro:wheel prefix="rear_right"  fb="-1" lr="-1" color="${wheel_color}" angle="${wheel_angle}"/>
+
+    <xacro:rotor color="${rotor_color}" angle="${rotor_angle}"/>
+  </xacro:macro>
+
+</robot>

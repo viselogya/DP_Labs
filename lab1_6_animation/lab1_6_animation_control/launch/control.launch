@@ -1,0 +1,7 @@
+<launch>
+  <group ns="vacuum">
+    <rosparam command="load" file="$(find lab1_6_animation_control)/config/controllers.yaml"/>
+    <node pkg="controller_manager" type="spawner" name="controller_spawner" output="screen"
+          args="joint_state_controller drive_controller"/>
+  </group>
+</launch>

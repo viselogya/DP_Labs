@@ -1,0 +1,16 @@
+<?xml version="1.0"?>
+<sdf version="1.6">
+  <model name="lab2_obstacle">
+    <static>true</static>
+    <link name="can">
+      <pose>0 0 0.06 0 0 0</pose>
+      <collision name="collision">
+        <geometry><cylinder><radius>0.035</radius><length>0.12</length></cylinder></geometry>
+      </collision>
+      <visual name="visual">
+        <geometry><cylinder><radius>0.035</radius><length>0.12</length></cylinder></geometry>
+        <material><ambient>0.8 0.04 0.04 1</ambient><diffuse>0.8 0.04 0.04 1</diffuse></material>
+      </visual>
+    </link>
+  </model>
+</sdf>

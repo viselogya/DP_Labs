@@ -1,0 +1,41 @@
+Visualization Manager:
+  Class: ""
+  Global Options:
+    Fixed Frame: odom
+    Frame Rate: 30
+  Displays:
+    - Class: rviz/Grid
+      Enabled: true
+      Name: Floor grid
+      Cell Size: 0.5
+      Plane Cell Count: 20
+    - Class: rviz/RobotModel
+      Enabled: true
+      Name: Vacuum
+      Robot Description: /vacuum/robot_description
+    - Class: rviz/LaserScan
+      Enabled: true
+      Name: Lidar
+      Topic: /vacuum/scan
+      Size (Pixels): 3
+    - Class: rviz/Range
+      Enabled: true
+      Name: Left sonar
+      Topic: /vacuum/sonar/left
+      Color: 255; 150; 0
+    - Class: rviz/Range
+      Enabled: true
+      Name: Center sonar
+      Topic: /vacuum/sonar/center
+      Color: 0; 200; 120
+    - Class: rviz/Range
+      Enabled: true
+      Name: Right sonar
+      Topic: /vacuum/sonar/right
+      Color: 80; 150; 255
+  Views:
+    Current:
+      Class: rviz/Orbit
+      Distance: 8
+      Pitch: 0.85
+      Yaw: 1.2

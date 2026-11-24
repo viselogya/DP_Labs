@@ -1,0 +1,51 @@
+material Vacuum/Shell
+{
+  technique
+  {
+    pass
+    {
+      ambient 0.65 0.74 0.78 1
+      diffuse 0.77 0.85 0.88 1
+      specular 0.55 0.55 0.55 1 64
+      texture_unit
+      {
+        texture paintedWall.jpg
+      }
+    }
+  }
+}
+
+material Vacuum/Rubber
+{
+  technique
+  {
+    pass
+    {
+      ambient 0.14 0.14 0.14 1
+      diffuse 0.24 0.24 0.24 1
+      specular 0.04 0.04 0.04 1 8
+      texture_unit
+      {
+        texture sidewalk.jpg
+        scale 0.28 0.28
+      }
+    }
+  }
+}
+
+material Vacuum/Sensor
+{
+  technique
+  {
+    pass
+    {
+      ambient 0.18 0.24 0.27 1
+      diffuse 0.27 0.38 0.43 1
+      specular 0.6 0.6 0.6 1 48
+      texture_unit
+      {
+        texture paintedWall.jpg
+      }
+    }
+  }
+}

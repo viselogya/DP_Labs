@@ -1,0 +1,23 @@
+<launch>
+  <arg name="gui" default="true"/>
+  <arg name="rviz" default="true"/>
+  <arg name="world" default="$(find lab1_5_sensors_gazebo)/worlds/office.world"/>
+
+  <param name="robot_description"
+         command="$(find xacro)/xacro '$(find lab1_5_sensors_description)/urdf/robot.urdf.xacro'"/>
+  <env name="GAZEBO_MODEL_PATH"
+       value="$(find lab1_5_sensors_gazebo)/models:$(optenv GAZEBO_MODEL_PATH)"/>
+  <include file="$(find gazebo_ros)/launch/empty_world.launch">
+    <arg name="world_name" value="$(arg world)"/>
+    <arg name="gui" value="$(arg gui)"/>
+    <arg name="use_sim_time" value="true"/>
+  </include>
+
+  <node pkg="gazebo_ros" type="spawn_model" name="spawn_lab15"
+        args="-urdf -param robot_description -model lab15_robot -x -3 -y -2 -z 0.02"/>
+  <node pkg="robot_state_publisher" type="robot_state_publisher" name="lab15_state_publisher">
+    <remap from="joint_states" to="/lab15/joint_states"/>
+  </node>
+  <node if="$(arg rviz)" pkg="rviz" type="rviz" name="lab15_rviz"
+        args="-d '$(find lab1_5_sensors_gazebo)/rviz/sensors.rviz'"/>
+</launch>

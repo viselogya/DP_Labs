@@ -1,0 +1,100 @@
+Panels:
+  - Class: rviz/Displays
+    Name: Displays
+Visualization Manager:
+  Class: ""
+  Global Options:
+    Fixed Frame: odom
+  Displays:
+    - Class: rviz/Grid
+      Name: Grid
+      Enabled: true
+      Plane Cell Count: 20
+      Cell Size: 0.5
+    - Class: rviz/RobotModel
+      Name: Robot
+      Robot Description: robot_description
+      Enabled: true
+    - Class: rviz/LaserScan
+      Name: Laser
+      Topic: /lab15/scan
+      Size (m): 0.025
+      Style: Flat Squares
+      Enabled: true
+    - Class: rviz/Range
+      Name: Sonar 0
+      Topic: /lab15/sonar/0
+      Color: 255; 170; 30
+      Alpha: 0.25
+      Buffer Length: 1
+      Enabled: true
+    - Class: rviz/Range
+      Name: Sonar 1
+      Topic: /lab15/sonar/1
+      Color: 255; 170; 30
+      Alpha: 0.25
+      Buffer Length: 1
+      Enabled: true
+    - Class: rviz/Range
+      Name: Sonar 2
+      Topic: /lab15/sonar/2
+      Color: 255; 170; 30
+      Alpha: 0.25
+      Buffer Length: 1
+      Enabled: true
+    - Class: rviz/Range
+      Name: Sonar 3
+      Topic: /lab15/sonar/3
+      Color: 255; 170; 30
+      Alpha: 0.25
+      Buffer Length: 1
+      Enabled: true
+    - Class: rviz/Range
+      Name: Sonar 4
+      Topic: /lab15/sonar/4
+      Color: 255; 170; 30
+      Alpha: 0.25
+      Buffer Length: 1
+      Enabled: true
+    - Class: rviz/Range
+      Name: Sonar 5
+      Topic: /lab15/sonar/5
+      Color: 255; 170; 30
+      Alpha: 0.25
+      Buffer Length: 1
+      Enabled: true
+    - Class: rviz/Range
+      Name: Sonar 6
+      Topic: /lab15/sonar/6
+      Color: 255; 170; 30
+      Alpha: 0.25
+      Buffer Length: 1
+      Enabled: true
+    - Class: rviz/Range
+      Name: Sonar 7
+      Topic: /lab15/sonar/7
+      Color: 255; 170; 30
+      Alpha: 0.25
+      Buffer Length: 1
+      Enabled: true
+    - Class: rviz/Image
+      Name: Stereo left
+      Image Topic: /lab15/stereo/left/image_raw
+      Transport Hint: raw
+      Enabled: true
+    - Class: rviz/Image
+      Name: Stereo right
+      Image Topic: /lab15/stereo/right/image_raw
+      Transport Hint: raw
+      Enabled: true
+    - Class: rviz/Image
+      Name: Rear camera
+      Image Topic: /lab15/rear/image_raw
+      Transport Hint: raw
+      Enabled: true
+  Views:
+    Current:
+      Class: rviz/Orbit
+      Distance: 4
+      Pitch: 0.8
+      Target Frame: base_footprint

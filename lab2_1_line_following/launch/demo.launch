@@ -1,0 +1,45 @@
+<?xml version="1.0"?>
+<launch>
+  <arg name="gui" default="true"/>
+  <arg name="obstacle" default="false"/>
+  <arg name="x" default="0.0"/>
+  <arg name="y" default="1.844"/>
+  <arg name="yaw" default="0.0"/>
+  <arg name="kp" default="1.5"/>
+  <arg name="ki" default="0.08"/>
+  <arg name="kd" default="0.10"/>
+  <arg name="speed" default="0.10"/>
+  <arg name="dark_threshold" default="0.35"/>
+  <arg name="search_direction" default="-1"/>
+
+  <group>
+    <!-- The drive controller runs inside gzserver and subscribes in its own namespace. -->
+    <remap from="/diff_drive_controller/cmd_vel" to="/cmd_vel"/>
+    <env name="GAZEBO_MODEL_PATH"
+         value="$(find roborace_gazebo)/models:$(optenv GAZEBO_MODEL_PATH)"/>
+    <include file="$(find gazebo_ros)/launch/empty_world.launch">
+      <arg name="world_name" value="$(find roborace_gazebo)/worlds/u_map.world"/>
+      <arg name="gui" value="$(arg gui)"/>
+    </include>
+  </group>
+
+  <param name="robot_description"
+         command="$(find xacro)/xacro '$(find lab2_1_line_following)/urdf/green_contact.urdf.xacro'"/>
+  <include file="$(find robocake_controllers)/launch/diffdrive.launch"/>
+  <param name="diff_drive_controller/cmd_vel_timeout" value="0.25"/>
+  <node name="spawn_robocake" pkg="gazebo_ros" type="spawn_model"
+        args="-urdf -param robot_description -model robocake -robot_namespace / -x $(arg x) -y $(arg y) -z 0.10 -Y $(arg yaw)"/>
+
+  <node if="$(arg obstacle)" name="spawn_obstacle" pkg="gazebo_ros" type="spawn_model"
+        args="-sdf -file '$(find lab2_1_line_following)/models/obstacle.sdf' -model lab2_obstacle -x 0.45 -y 1.844 -z 0.01"/>
+
+  <node name="line_follower" pkg="lab2_1_line_following" type="line_follower.py"
+        output="screen" required="true">
+    <param name="kp" value="$(arg kp)"/>
+    <param name="ki" value="$(arg ki)"/>
+    <param name="kd" value="$(arg kd)"/>
+    <param name="speed" value="$(arg speed)"/>
+    <param name="dark_threshold" value="$(arg dark_threshold)"/>
+    <param name="search_direction" value="$(arg search_direction)"/>
+  </node>
+</launch>

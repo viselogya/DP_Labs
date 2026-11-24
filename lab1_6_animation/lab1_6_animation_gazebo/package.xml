@@ -1,0 +1,15 @@
+<?xml version="1.0"?>
+<package format="2">
+  <name>lab1_6_animation_gazebo</name>
+  <version>0.1.0</version>
+  <description>Furnished room, RViz configuration and launch files for the vacuum demo.</description>
+  <maintainer email="maintainer@example.com">DP Labs</maintainer>
+  <license>MIT</license>
+  <license>CC-BY-3.0</license>
+  <buildtool_depend>catkin</buildtool_depend>
+  <exec_depend>gazebo_ros</exec_depend>
+  <exec_depend>lab1_6_animation_algorithm</exec_depend>
+  <exec_depend>lab1_6_animation_control</exec_depend>
+  <exec_depend>lab1_6_animation_description</exec_depend>
+  <exec_depend>rviz</exec_depend>
+</package>

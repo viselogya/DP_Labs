@@ -1,0 +1,92 @@
+<?xml version="1.0"?>
+<sdf version="1.6">
+  <world name="warehouse">
+    <include><uri>model://ground_plane</uri></include>
+    <include><uri>model://sun</uri></include>
+    <model name="north_wall">
+      <static>true</static>
+      <pose>0 1.45 0.325 0 0 0</pose>
+      <link name="body">
+        <collision name="footprint">
+          <geometry><box><size>3.6 0.1 0.65</size></box></geometry>
+        </collision>
+        <visual name="surface">
+          <geometry><box><size>3.6 0.1 0.65</size></box></geometry>
+          <material><ambient>0.54 0.61 0.70 1</ambient><diffuse>0.54 0.61 0.70 1</diffuse></material>
+        </visual>
+      </link>
+    </model>
+    <model name="south_wall">
+      <static>true</static>
+      <pose>0 -1.45 0.325 0 0 0</pose>
+      <link name="body">
+        <collision name="footprint">
+          <geometry><box><size>3.6 0.1 0.65</size></box></geometry>
+        </collision>
+        <visual name="surface">
+          <geometry><box><size>3.6 0.1 0.65</size></box></geometry>
+          <material><ambient>0.54 0.61 0.70 1</ambient><diffuse>0.54 0.61 0.70 1</diffuse></material>
+        </visual>
+      </link>
+    </model>
+    <model name="west_wall">
+      <static>true</static>
+      <pose>-1.75 0 0.325 0 0 0</pose>
+      <link name="body">
+        <collision name="footprint">
+          <geometry><box><size>0.1 2.8 0.65</size></box></geometry>
+        </collision>
+        <visual name="surface">
+          <geometry><box><size>0.1 2.8 0.65</size></box></geometry>
+          <material><ambient>0.54 0.61 0.70 1</ambient><diffuse>0.54 0.61 0.70 1</diffuse></material>
+        </visual>
+      </link>
+    </model>
+    <model name="east_wall">
+      <static>true</static>
+      <pose>1.75 0 0.325 0 0 0</pose>
+      <link name="body">
+        <collision name="footprint">
+          <geometry><box><size>0.1 2.8 0.65</size></box></geometry>
+        </collision>
+        <visual name="surface">
+          <geometry><box><size>0.1 2.8 0.65</size></box></geometry>
+          <material><ambient>0.54 0.61 0.70 1</ambient><diffuse>0.54 0.61 0.70 1</diffuse></material>
+        </visual>
+      </link>
+    </model>
+    <model name="central_rack">
+      <static>true</static>
+      <pose>0 0 0.275 0 0 0</pose>
+      <link name="body">
+        <collision name="footprint">
+          <geometry><box><size>0.7 0.8 0.55</size></box></geometry>
+        </collision>
+        <visual name="surface">
+          <geometry><box><size>0.7 0.8 0.55</size></box></geometry>
+          <material><ambient>0.64 0.42 0.25 1</ambient><diffuse>0.64 0.42 0.25 1</diffuse></material>
+        </visual>
+      </link>
+    </model>
+    <model name="loading_zone">
+      <static>true</static>
+      <pose>-1.1 0 0.0005 0 0 0</pose>
+      <link name="body">
+        <visual name="surface">
+          <geometry><box><size>0.4 0.4 0.001</size></box></geometry>
+          <material><ambient>0.13 0.48 0.83 1</ambient><diffuse>0.13 0.48 0.83 1</diffuse></material>
+        </visual>
+      </link>
+    </model>
+    <model name="unloading_zone">
+      <static>true</static>
+      <pose>1.1 0 0.0005 0 0 0</pose>
+      <link name="body">
+        <visual name="surface">
+          <geometry><box><size>0.4 0.4 0.001</size></box></geometry>
+          <material><ambient>0.92 0.59 0.12 1</ambient><diffuse>0.92 0.59 0.12 1</diffuse></material>
+        </visual>
+      </link>
+    </model>
+  </world>
+</sdf>

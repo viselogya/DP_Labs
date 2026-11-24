@@ -1,0 +1,18 @@
+<?xml version="1.0"?>
+<robot xmlns:xacro="http://www.ros.org/wiki/xacro" name="robocake">
+  <xacro:include filename="$(find robocake_description)/robots/green.urdf.xacro"/>
+  <gazebo reference="base_link">
+    <sensor name="chassis_contact" type="contact">
+      <always_on>true</always_on>
+      <update_rate>50</update_rate>
+      <contact>
+        <collision>base_link_collision</collision>
+      </contact>
+      <plugin name="lab2_bumper" filename="libgazebo_ros_bumper.so">
+        <robotNamespace>/</robotNamespace>
+        <bumperTopicName>/lab2/chassis_contacts</bumperTopicName>
+        <frameName>world</frameName>
+      </plugin>
+    </sensor>
+  </gazebo>
+</robot>

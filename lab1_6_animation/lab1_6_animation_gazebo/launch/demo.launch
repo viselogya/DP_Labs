@@ -1,0 +1,12 @@
+<launch>
+  <arg name="gui" default="true"/>
+  <arg name="rviz" default="true"/>
+  <arg name="autonomous" default="true"/>
+  <include file="$(find lab1_6_animation_description)/launch/description.launch"/>
+  <include file="$(find lab1_6_animation_gazebo)/launch/gazebo.launch">
+    <arg name="gui" value="$(arg gui)"/>
+    <arg name="rviz" value="$(arg rviz)"/>
+  </include>
+  <include file="$(find lab1_6_animation_control)/launch/control.launch"/>
+  <include if="$(arg autonomous)" file="$(find lab1_6_animation_algorithm)/launch/algorithm.launch"/>
+</launch>

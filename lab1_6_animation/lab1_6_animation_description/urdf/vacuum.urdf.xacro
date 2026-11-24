@@ -1,0 +1,155 @@
+<?xml version="1.0"?>
+<robot xmlns:xacro="http://www.ros.org/wiki/xacro" name="vacuum">
+  <xacro:macro name="cylinder" params="radius length">
+    <geometry><cylinder radius="${radius}" length="${length}"/></geometry>
+  </xacro:macro>
+
+  <xacro:macro name="cylinder_inertia" params="mass radius length z:=0">
+    <inertial>
+      <origin xyz="0 0 ${z}"/>
+      <mass value="${mass}"/>
+      <inertia ixx="${mass*(3*radius**2 + length**2)/12}" ixy="0" ixz="0"
+               iyy="${mass*(3*radius**2 + length**2)/12}" iyz="0" izz="${mass*radius**2/2}"/>
+    </inertial>
+  </xacro:macro>
+
+  <xacro:macro name="finish" params="link surface">
+    <gazebo reference="${link}">
+      <visual>
+        <material>
+          <script>
+            <uri>file://$(find lab1_6_animation_description)/materials/vacuum.material</uri>
+            <uri>file://media/materials/textures</uri>
+            <name>Vacuum/${surface}</name>
+          </script>
+        </material>
+      </visual>
+    </gazebo>
+  </xacro:macro>
+
+  <material name="shell"><color rgba="0.72 0.81 0.85 1"/></material>
+  <material name="rubber"><color rgba="0.13 0.13 0.13 1"/></material>
+  <material name="sensor"><color rgba="0.18 0.29 0.34 1"/></material>
+
+  <link name="base_link">
+    <xacro:cylinder_inertia mass="2.5" radius="0.18" length="0.073" z="0.1225"/>
+    <visual name="shell">
+      <origin xyz="0 0 0.1225"/>
+      <xacro:cylinder radius="0.18" length="0.073"/>
+      <material name="shell"/>
+    </visual>
+    <collision>
+      <origin xyz="0 0 0.1225"/>
+      <xacro:cylinder radius="0.18" length="0.073"/>
+    </collision>
+  </link>
+  <xacro:finish link="base_link" surface="Shell"/>
+
+  <!-- A wheel's local Z axis is its axle. Its origin is at the hub. -->
+  <xacro:macro name="wheel" params="name x y radius width mass roll pitch friction interface">
+    <link name="${name}">
+      <xacro:cylinder_inertia mass="${mass}" radius="${radius}" length="${width}"/>
+      <visual name="${name}_tire">
+        <xacro:cylinder radius="${radius}" length="${width}"/>
+        <material name="rubber"/>
+      </visual>
+      <collision><xacro:cylinder radius="${radius}" length="${width}"/></collision>
+    </link>
+    <joint name="${name}_joint" type="continuous">
+      <parent link="base_link"/><child link="${name}"/>
+      <origin xyz="${x} ${y} ${radius}" rpy="${roll} ${pitch} 0"/>
+      <axis xyz="0 0 1"/>
+      <limit effort="2.0" velocity="20.0"/>
+      <dynamics damping="0.002"/>
+    </joint>
+    <gazebo reference="${name}">
+      <mu1>${friction}</mu1><mu2>${friction}</mu2>
+    </gazebo>
+    <xacro:finish link="${name}" surface="Rubber"/>
+    <transmission name="${name}_transmission">
+      <type>transmission_interface/SimpleTransmission</type>
+      <joint name="${name}_joint"><hardwareInterface>hardware_interface/${interface}</hardwareInterface></joint>
+      <actuator name="${name}_motor"><mechanicalReduction>1</mechanicalReduction></actuator>
+    </transmission>
+  </xacro:macro>
+
+  <xacro:wheel name="left_wheel" x="0" y="0.148" radius="0.042" width="0.026" mass="0.11"
+               roll="${-pi/2}" pitch="0" friction="1.2" interface="VelocityJointInterface"/>
+  <xacro:wheel name="right_wheel" x="0" y="-0.148" radius="0.042" width="0.026" mass="0.11"
+               roll="${-pi/2}" pitch="0" friction="1.2" interface="VelocityJointInterface"/>
+  <!-- The transverse support rollers slip along their axles during straight motion. -->
+  <xacro:wheel name="front_support" x="0.12" y="0" radius="0.025" width="0.023" mass="0.04"
+               roll="0" pitch="${pi/2}" friction="0.015" interface="EffortJointInterface"/>
+  <xacro:wheel name="rear_support" x="-0.12" y="0" radius="0.025" width="0.023" mass="0.04"
+               roll="0" pitch="${pi/2}" friction="0.015" interface="EffortJointInterface"/>
+
+  <xacro:macro name="fixed_cylinder" params="name parent xyz yaw radius length mass surface color">
+    <link name="${name}">
+      <xacro:cylinder_inertia mass="${mass}" radius="${radius}" length="${length}"/>
+      <visual name="${name}_case">
+        <xacro:cylinder radius="${radius}" length="${length}"/>
+        <material name="${color}"/>
+      </visual>
+      <collision><xacro:cylinder radius="${radius}" length="${length}"/></collision>
+    </link>
+    <joint name="${name}_mount" type="fixed">
+      <parent link="${parent}"/><child link="${name}"/>
+      <origin xyz="${xyz}" rpy="0 0 ${yaw}"/>
+    </joint>
+    <gazebo reference="${name}_mount"><preserveFixedJoint>true</preserveFixedJoint></gazebo>
+    <xacro:finish link="${name}" surface="${surface}"/>
+  </xacro:macro>
+
+  <xacro:macro name="sonar" params="side x y yaw">
+    <xacro:fixed_cylinder name="sonar_${side}" parent="base_link" xyz="${x} ${y} 0.114" yaw="${yaw}"
+                         radius="0.016" length="0.024" mass="0.015" surface="Sensor" color="sensor"/>
+    <gazebo reference="sonar_${side}">
+      <sensor name="ultrasonic_${side}" type="ray">
+        <always_on>true</always_on><update_rate>20</update_rate>
+        <ray>
+          <scan><horizontal><samples>11</samples><resolution>1</resolution>
+            <min_angle>-0.18</min_angle><max_angle>0.18</max_angle>
+          </horizontal></scan>
+          <range><min>0.025</min><max>2.5</max><resolution>0.005</resolution></range>
+        </ray>
+        <plugin name="range_${side}" filename="libgazebo_ros_range.so">
+          <robotNamespace>/vacuum</robotNamespace>
+          <topicName>sonar/${side}</topicName><frameName>sonar_${side}</frameName>
+          <radiation>ultrasound</radiation><fov>0.36</fov><gaussianNoise>0.003</gaussianNoise>
+        </plugin>
+      </sensor>
+    </gazebo>
+  </xacro:macro>
+
+  <xacro:sonar side="left" x="0.151" y="0.096" yaw="0.55"/>
+  <xacro:sonar side="center" x="0.179" y="0" yaw="0"/>
+  <xacro:sonar side="right" x="0.151" y="-0.096" yaw="-0.55"/>
+
+  <xacro:fixed_cylinder name="lidar_pedestal" parent="base_link" xyz="0 0 0.174" yaw="0"
+                       radius="0.029" length="0.030" mass="0.045" surface="Shell" color="shell"/>
+  <xacro:fixed_cylinder name="laser" parent="lidar_pedestal" xyz="0 0 0.029" yaw="0"
+                       radius="0.036" length="0.028" mass="0.07" surface="Sensor" color="sensor"/>
+  <gazebo reference="laser">
+    <sensor name="lidar" type="ray">
+      <always_on>true</always_on><update_rate>15</update_rate>
+      <ray>
+        <scan><horizontal><samples>361</samples><resolution>1</resolution>
+          <min_angle>${-pi}</min_angle><max_angle>${pi}</max_angle>
+        </horizontal></scan>
+        <range><min>0.075</min><max>8.0</max><resolution>0.01</resolution></range>
+        <noise><type>gaussian</type><mean>0</mean><stddev>0.004</stddev></noise>
+      </ray>
+      <plugin name="laser_ros" filename="libgazebo_ros_laser.so">
+        <robotNamespace>/vacuum</robotNamespace>
+        <topicName>scan</topicName><frameName>laser</frameName>
+      </plugin>
+    </sensor>
+  </gazebo>
+
+  <gazebo>
+    <plugin name="vacuum_control" filename="libgazebo_ros_control.so">
+      <robotNamespace>/vacuum</robotNamespace>
+      <robotParam>/vacuum/robot_description</robotParam>
+    </plugin>
+  </gazebo>
+</robot>

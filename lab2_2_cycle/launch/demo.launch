@@ -1,0 +1,14 @@
+<?xml version="1.0"?>
+<launch>
+  <arg name="gui" default="true"/>
+  <arg name="rviz" default="true"/>
+  <arg name="dwell" default="2.0"/>
+  <include file="$(find lab2_2_cycle)/launch/warehouse.launch">
+    <arg name="gui" value="$(arg gui)"/>
+    <arg name="rviz" value="$(arg rviz)"/>
+  </include>
+  <node name="cycle_controller" pkg="lab2_2_cycle" type="cycle_controller.py"
+        required="true" output="screen">
+    <param name="dwell" value="$(arg dwell)"/>
+  </node>
+</launch>

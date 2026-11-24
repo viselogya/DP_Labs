@@ -1,0 +1,13 @@
+<launch>
+  <arg name="gui" default="true"/>
+  <arg name="rviz" default="true"/>
+  <env name="GAZEBO_MODEL_PATH" value="$(find lab1_6_animation_gazebo)/models:$(optenv GAZEBO_MODEL_PATH)"/>
+  <include file="$(find gazebo_ros)/launch/empty_world.launch">
+    <arg name="world_name" value="$(find lab1_6_animation_gazebo)/worlds/living_room.world"/>
+    <arg name="gui" value="$(arg gui)"/>
+  </include>
+  <node pkg="gazebo_ros" type="spawn_model" name="spawn_vacuum" output="screen"
+        args="-urdf -param /vacuum/robot_description -model vacuum -x -2.4 -y 1.4 -z 0.012 -Y 0"/>
+  <node if="$(arg rviz)" pkg="rviz" type="rviz" name="vacuum_rviz"
+        args="-d &quot;$(find lab1_6_animation_gazebo)/rviz/vacuum.rviz&quot;"/>
+</launch>

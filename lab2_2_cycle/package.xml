@@ -1,0 +1,27 @@
+<?xml version="1.0"?>
+<package format="2">
+  <name>lab2_2_cycle</name>
+  <version>0.1.0</version>
+  <description>RoboCake Beginner warehouse cycle with wheel odometry</description>
+  <maintainer email="maintainer@example.com">DP Labs</maintainer>
+  <license>BSD-3-Clause</license>
+  <buildtool_depend>catkin</buildtool_depend>
+  <exec_depend>rospy</exec_depend>
+  <exec_depend>geometry_msgs</exec_depend>
+  <exec_depend>nav_msgs</exec_depend>
+  <exec_depend>sensor_msgs</exec_depend>
+  <exec_depend>tf</exec_depend>
+  <exec_depend>tf2_ros</exec_depend>
+  <exec_depend>gazebo_ros</exec_depend>
+  <exec_depend>gazebo_ros_control</exec_depend>
+  <exec_depend>controller_manager</exec_depend>
+  <exec_depend>diff_drive_controller</exec_depend>
+  <exec_depend>joint_state_controller</exec_depend>
+  <exec_depend>robot_state_publisher</exec_depend>
+  <exec_depend>robocake_description</exec_depend>
+  <exec_depend>robocake_controllers</exec_depend>
+  <exec_depend>robocake_gazebo</exec_depend>
+  <exec_depend>xacro</exec_depend>
+  <exec_depend>map_server</exec_depend>
+  <exec_depend>rviz</exec_depend>
+</package>

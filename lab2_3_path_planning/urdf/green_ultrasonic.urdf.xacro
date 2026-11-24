@@ -1,0 +1,19 @@
+<?xml version="1.0"?>
+<robot xmlns:xacro="http://www.ros.org/wiki/xacro" name="robocake">
+  <xacro:include filename="$(find robocake_description)/robots/green.urdf.xacro"/>
+
+  <!-- Put each virtual transducer just ahead of the chassis, facing out. -->
+  <xacro:macro name="front_ultrasonic" params="side y yaw">
+    <xacro:dummy_link name="proximity_front_${side}_link"/>
+    <joint name="proximity_front_${side}_joint" type="fixed">
+      <parent link="base_link"/>
+      <child link="proximity_front_${side}_link"/>
+      <origin xyz="0.092 ${y} 0.018" rpy="0 0 ${yaw}"/>
+    </joint>
+    <xacro:gazebo_proximity_sensor name="proximity_front_${side}"
+        angle="${5 / 180 * pi}" min_range="0.02" max_range="0.8" type="ultrasound"/>
+  </xacro:macro>
+
+  <xacro:front_ultrasonic side="left" y="0.047" yaw="${pi / 6}"/>
+  <xacro:front_ultrasonic side="right" y="-0.047" yaw="${-pi / 6}"/>
+</robot>

@@ -1,0 +1,56 @@
+Panels:
+  - Class: rviz/Displays
+    Name: Displays
+  - Class: rviz/Views
+    Name: Views
+Visualization Manager:
+  Class: ""
+  Global Options:
+    Fixed Frame: map
+    Background Color: 45; 49; 55
+  Displays:
+    - Class: rviz/Map
+      Name: Warehouse map
+      Enabled: true
+      Topic: /map
+      Color Scheme: map
+      Alpha: 1
+      Draw Behind: true
+    - Class: rviz/Map
+      Name: Inflated costmap
+      Enabled: true
+      Topic: /costmap_node/costmap/costmap
+      Color Scheme: costmap
+      Alpha: 0.65
+      Draw Behind: false
+    - Class: rviz/RobotModel
+      Name: RoboCake Beginner
+      Enabled: true
+      Robot Description: robot_description
+    - Class: rviz/Polygon
+      Name: Hexagonal footprint
+      Enabled: true
+      Topic: /costmap_node/costmap/footprint
+      Color: 255; 179; 65
+    - Class: rviz/Path
+      Name: A* path
+      Enabled: true
+      Topic: /path_planner/path
+      Color: 25; 245; 105
+      Line Style: Billboards
+      Line Width: 0.025
+      Offset:
+        X: 0
+        Y: 0
+        Z: 0.03
+  Tools:
+    - Class: rviz/Interact
+    - Class: rviz/MoveCamera
+    - Class: rviz/SetGoal
+      Topic: /move_base_simple/goal
+  Views:
+    Current:
+      Class: rviz/TopDownOrtho
+      Scale: 150
+      X: 0
+      Y: 0

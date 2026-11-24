@@ -1,0 +1,5 @@
+<launch>
+  <group ns="vacuum">
+    <node pkg="lab1_6_animation_algorithm" type="vacuum_sweep" name="vacuum_sweep" output="screen"/>
+  </group>
+</launch>

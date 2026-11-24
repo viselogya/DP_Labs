@@ -1,0 +1,22 @@
+<?xml version="1.0"?>
+<sdf version="1.6">
+  <world name="office">
+    <include><uri>model://sun</uri></include>
+    <include><uri>model://ground_plane</uri></include>
+    <include>
+      <uri>model://table</uri><name>desk_west</name><pose>-1.7 0.6 0 0 0 1.57</pose>
+    </include>
+    <include>
+      <uri>model://table</uri><name>desk_east</name><pose>1.7 0.6 0 0 0 1.57</pose>
+    </include>
+    <include>
+      <uri>model://bookshelf</uri><name>shelf_northwest</name><pose>-2.8 2.8 0 0 0 0</pose>
+    </include>
+    <include>
+      <uri>model://bookshelf</uri><name>shelf_northeast</name><pose>2.8 2.8 0 0 0 0</pose>
+    </include>
+    <include>
+      <uri>model://bookshelf</uri><name>shelf_southeast</name><pose>3.2 -2.8 0 0 0 3.14</pose>
+    </include>
+  </world>
+</sdf>

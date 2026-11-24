@@ -1,0 +1,65 @@
+<?xml version="1.0"?>
+<launch>
+  <arg name="gui" default="true"/>
+  <arg name="rviz" default="true"/>
+  <arg name="x" default="-1.10"/>
+  <arg name="y" default="0.0"/>
+  <arg name="yaw" default="0.0"/>
+  <arg name="goal_x" default="1.10"/>
+  <arg name="goal_y" default="0.0"/>
+  <arg name="autostart" default="true"/>
+  <arg name="robot_radius" default="0.12"/>
+  <arg name="inflation_radius" default="0.40"/>
+  <arg name="cost_scaling_factor" default="8.0"/>
+  <arg name="planner_config" default="$(find lab2_3_path_planning)/config/planner.yaml"/>
+  <arg name="costmap_config" default="$(find lab2_3_path_planning)/config/costmap.yaml"/>
+
+  <include file="$(find gazebo_ros)/launch/empty_world.launch">
+    <arg name="world_name" value="$(find lab2_2_cycle)/worlds/warehouse.world"/>
+    <arg name="gui" value="$(arg gui)"/>
+    <arg name="use_sim_time" value="true"/>
+  </include>
+  <node name="map_server" pkg="map_server" type="map_server"
+        args="'$(find lab2_2_cycle)/maps/warehouse.yaml'"/>
+
+  <param name="robot_description"
+         command="$(find xacro)/xacro '$(find lab2_3_path_planning)/urdf/green_ultrasonic.urdf.xacro'"/>
+  <rosparam command="load" ns="diff_drive_controller"
+            file="$(find robocake_controllers)/config/diffdrive.yaml"/>
+  <param name="diff_drive_controller/enable_odom_tf" value="true"/>
+  <param name="diff_drive_controller/odom_frame_id" value="odom"/>
+  <param name="diff_drive_controller/base_frame_id" value="base_link"/>
+  <param name="diff_drive_controller/open_loop" value="false"/>
+  <param name="diff_drive_controller/cmd_vel_timeout" value="0.25"/>
+  <param name="diff_drive_controller/wheel_radius" value="0.022131"/>
+  <param name="diff_drive_controller/wheel_separation" value="0.084918"/>
+  <rosparam param="joint_state_controller">
+    type: joint_state_controller/JointStateController
+    publish_rate: 50
+  </rosparam>
+  <node name="controller_spawner" pkg="controller_manager" type="spawner"
+        args="joint_state_controller diff_drive_controller" output="screen"/>
+  <node name="spawn_robocake" pkg="gazebo_ros" type="spawn_model"
+        args="-urdf -param robot_description -model robocake -robot_namespace / -x $(arg x) -y $(arg y) -z 0.10 -Y $(arg yaw)"/>
+  <node name="robot_state_publisher" pkg="robot_state_publisher" type="robot_state_publisher"/>
+  <node name="localization_publisher" pkg="tf2_ros" type="static_transform_publisher"
+        args="$(arg x) $(arg y) 0 $(arg yaw) 0 0 map odom"/>
+
+  <node name="costmap_node" pkg="costmap_2d" type="costmap_2d_node" output="screen">
+    <rosparam command="load" ns="costmap" file="$(arg costmap_config)"/>
+    <param name="costmap/robot_radius" value="$(arg robot_radius)"/>
+    <param name="costmap/footprint" type="str"
+           value="$(eval [[1*float(arg('robot_radius')), 0], [0.5*float(arg('robot_radius')), 0.8660254038*float(arg('robot_radius'))], [-0.5*float(arg('robot_radius')), 0.8660254038*float(arg('robot_radius'))], [-1*float(arg('robot_radius')), 0], [-0.5*float(arg('robot_radius')), -0.8660254038*float(arg('robot_radius'))], [0.5*float(arg('robot_radius')), -0.8660254038*float(arg('robot_radius'))]])"/>
+    <param name="costmap/inflation_layer/inflation_radius" value="$(arg inflation_radius)"/>
+    <param name="costmap/inflation_layer/cost_scaling_factor" value="$(arg cost_scaling_factor)"/>
+  </node>
+  <node name="path_planner" pkg="lab2_3_path_planning" type="path_planner.py"
+        output="screen" required="true">
+    <rosparam command="load" file="$(arg planner_config)"/>
+    <param name="autostart" value="$(arg autostart)"/>
+    <param name="goal_x" value="$(arg goal_x)"/>
+    <param name="goal_y" value="$(arg goal_y)"/>
+  </node>
+  <node if="$(arg rviz)" name="path_rviz" pkg="rviz" type="rviz"
+        args="-d '$(find lab2_3_path_planning)/config/warehouse.rviz'"/>
+</launch>

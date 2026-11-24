@@ -1,0 +1,45 @@
+<?xml version="1.0"?>
+<launch>
+  <arg name="gui" default="true"/>
+  <arg name="rviz" default="true"/>
+  <arg name="x" default="-1.10"/>
+  <arg name="y" default="0.0"/>
+  <arg name="yaw" default="0.0"/>
+
+  <group>
+    <remap from="/diff_drive_controller/cmd_vel" to="/cmd_vel"/>
+    <include file="$(find gazebo_ros)/launch/empty_world.launch">
+      <arg name="world_name" value="$(find lab2_2_cycle)/worlds/warehouse.world"/>
+      <arg name="gui" value="$(arg gui)"/>
+      <arg name="use_sim_time" value="true"/>
+    </include>
+  </group>
+
+  <param name="robot_description"
+         command="$(find xacro)/xacro '$(find robocake_description)/robots/green.urdf.xacro'"/>
+  <rosparam command="load" ns="diff_drive_controller"
+            file="$(find robocake_controllers)/config/diffdrive.yaml"/>
+  <param name="diff_drive_controller/enable_odom_tf" value="false"/>
+  <param name="diff_drive_controller/open_loop" value="false"/>
+  <param name="diff_drive_controller/cmd_vel_timeout" value="0.25"/>
+  <param name="diff_drive_controller/wheel_radius" value="0.022131"/>
+  <param name="diff_drive_controller/wheel_separation" value="0.084918"/>
+  <rosparam param="joint_state_controller">
+    type: joint_state_controller/JointStateController
+    publish_rate: 50
+  </rosparam>
+  <node name="controller_spawner" pkg="controller_manager" type="spawner"
+        args="joint_state_controller diff_drive_controller" output="screen"/>
+  <node name="spawn_robocake" pkg="gazebo_ros" type="spawn_model"
+        args="-urdf -param robot_description -model robocake -robot_namespace / -x $(arg x) -y $(arg y) -z 0.10 -Y $(arg yaw)"/>
+  <node name="robot_state_publisher" pkg="robot_state_publisher" type="robot_state_publisher"/>
+  <node name="odometry_publisher" pkg="lab2_2_cycle" type="odometry_publisher.py" required="true"/>
+  <node name="localization_publisher" pkg="lab2_2_cycle" type="localization_publisher.py" required="true">
+    <param name="start_x" value="$(arg x)"/>
+    <param name="start_y" value="$(arg y)"/>
+    <param name="start_yaw" value="$(arg yaw)"/>
+  </node>
+  <include file="$(find lab2_2_cycle)/launch/map.launch">
+    <arg name="rviz" value="$(arg rviz)"/>
+  </include>
+</launch>

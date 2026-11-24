@@ -1,0 +1,12 @@
+<?xml version="1.0"?>
+<package format="2">
+  <name>lab1_6_animation_control</name>
+  <version>0.1.0</version>
+  <description>Joint states and differential drive configuration for the vacuum robot.</description>
+  <maintainer email="maintainer@example.com">DP Labs</maintainer>
+  <license>MIT</license>
+  <buildtool_depend>catkin</buildtool_depend>
+  <exec_depend>controller_manager</exec_depend>
+  <exec_depend>diff_drive_controller</exec_depend>
+  <exec_depend>joint_state_controller</exec_depend>
+</package>

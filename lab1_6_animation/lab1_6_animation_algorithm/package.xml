@@ -1,0 +1,14 @@
+<?xml version="1.0"?>
+<package format="2">
+  <name>lab1_6_animation_algorithm</name>
+  <version>0.1.0</version>
+  <description>Sensor-feedback room traversal node for lab 1.6, variant C.</description>
+  <maintainer email="maintainer@example.com">DP Labs</maintainer>
+  <license>MIT</license>
+  <buildtool_depend>catkin</buildtool_depend>
+  <depend>geometry_msgs</depend>
+  <depend>nav_msgs</depend>
+  <depend>roscpp</depend>
+  <depend>sensor_msgs</depend>
+  <depend>tf2</depend>
+</package>

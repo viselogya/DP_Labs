@@ -1,0 +1,6 @@
+<launch>
+  <group ns="vacuum">
+    <param name="robot_description" command="$(find xacro)/xacro '$(find lab1_6_animation_description)/urdf/vacuum.urdf.xacro'"/>
+    <node pkg="robot_state_publisher" type="robot_state_publisher" name="robot_state_publisher"/>
+  </group>
+</launch>

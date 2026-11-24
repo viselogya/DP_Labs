@@ -1,8 +1,8 @@
 # DP_Labs — моделирование и программирование в среде ROS
 
 Лабораторные работы по дисциплине «Моделирование и программирование в среде ROS
-робототехнических устройств» (ФПМИ БГУ, 4 курс, 7 семестр), раздел 1 «Основы моделирования
-робототехнических аппаратов в среде ROS», работы **1.1–1.4**.
+робототехнических устройств» (ФПМИ БГУ, 4 курс, 7 семестр). Репозиторий содержит работы
+**1.1–1.6** по моделированию и **2.1–2.3** по управлению мобильным роботом.
 
 | Работа | Пакет(ы) | Содержание |
 |---|---|---|
@@ -10,6 +10,11 @@
 | 1.2 Подвижные твёрдотельные модели | `lab1_2_manipulator` | URDF-манипулятор с 5 степенями свободы и схватом из STL, сфера-мишень, скрипт перехода в положение захвата |
 | 1.3 Макросы XACRO | `lab1_3_xacro_platform` | колёсная платформа на XACRO: сборочный скрипт + 3 производных вида, один launch-файл |
 | 1.4 Имитационное моделирование в Gazebo | `lab1_4_arm_description`, `lab1_4_arm_control`, `lab1_4_arm_gazebo` | манипулятор из 1.2 в Gazebo, `ros_control`, цикловое управление через `rqt_gui` |
+| 1.5 Сенсорные системы | [1.5](lab1_5_sensors/README.md) | дифференциальная платформа, камеры, лидар, ультразвук, запись и воспроизведение rosbag |
+| 1.6 Моделирование робота-пылесоса | [1.6](lab1_6_animation/README.md) | текстурированная модель, комнатная сцена и управление по датчикам |
+| 2.1 Адаптивное управление | [2.1](lab2_1_line_following/README.md) | RoboCake, ПИД-регулятор движения по линии и остановка перед препятствием |
+| 2.2 Цикловое управление | [2.2](lab2_2_cycle/README.md) | склад, одометрия и циклограмма движения между зонами |
+| 2.3 Планирование движения | [2.3](lab2_3_path_planning/README.md) | карта стоимостей, поиск A* и движение по маршруту с контролем препятствий |
 
 **Варианты:** 1.2 и 1.4 — **г) угловая система координат** (рис. 7 методички 1.2);
 1.3 — **платформа б)** (рис. 2 методички 1.3: корпус с надстройкой, 4 колеса, задний вращающийся цилиндр).
@@ -36,6 +41,9 @@ ros-noetic-desktop-full          # roscore, rviz, gazebo_ros, turtlesim, rqt, xa
 ros-noetic-joint-state-publisher-gui
 ros-noetic-ros-control ros-noetic-ros-controllers ros-noetic-gazebo-ros-control
 ros-noetic-rqt-publisher ros-noetic-rqt-plot
+ros-noetic-gazebo-plugins ros-noetic-map-server ros-noetic-costmap-2d
+ros-noetic-teleop-twist-keyboard
+libgazebo11-dev git
 ```
 
 ---
@@ -58,8 +66,10 @@ cd DP_Labs
 docker build -f docker/Dockerfile -t dp_labs .
 ```
 
-Образ основан на `osrf/ros:noetic-desktop-full`; при сборке в нём ставятся зависимости и
-выполняется `catkin_make` — workspace лежит в `/catkin_ws`, окружение подключается автоматически.
+Образ основан на `osrf/ros:noetic-desktop-full`. При сборке он скачивает фиксированную версию
+RoboCake Beginner и трассу RoboRace с GitHub, устанавливает зависимости и собирает пакеты
+через `catkin_make`.
+Рабочая область находится в `/catkin_ws`. Окружение подключается при открытии терминала в контейнере.
 
 ### 2.3. Запуск контейнера
 
@@ -92,11 +102,15 @@ sudo apt update
 sudo apt install -y ros-noetic-desktop-full \
     ros-noetic-joint-state-publisher-gui \
     ros-noetic-ros-control ros-noetic-ros-controllers ros-noetic-gazebo-ros-control \
-    ros-noetic-rqt-publisher ros-noetic-rqt-plot
+    ros-noetic-rqt-publisher ros-noetic-rqt-plot ros-noetic-xacro \
+    ros-noetic-gazebo-plugins ros-noetic-map-server ros-noetic-costmap-2d \
+    ros-noetic-teleop-twist-keyboard \
+    libgazebo11-dev git
 
 # workspace
 mkdir -p ~/catkin_ws/src && cd ~/catkin_ws/src
 git clone https://github.com/viselogya/DP_Labs.git
+bash DP_Labs/scripts/fetch_robocake.sh "$PWD"
 cd ~/catkin_ws
 source /opt/ros/noetic/setup.bash
 catkin_make
@@ -109,6 +123,8 @@ source devel/setup.bash          # выполнять в каждом новом
 
 Во всех командах ниже окружение уже подключено (`source devel/setup.bash`).
 `roslaunch` сам запускает `roscore`, если он не запущен.
+Останавливайте текущую работу через Ctrl+C перед запуском следующей, чтобы симуляторы
+и узлы управления не использовали одни и те же имена и темы.
 
 ### Лабораторная 1.1 — инициалы в TurtleSim
 
@@ -302,6 +318,53 @@ roslaunch lab1_4_arm_gazebo arm_world.launch cycle:=true   # или всё од�
 отключена гравитация (`turnGravityOff`), чтобы ПИД-регуляторы положения работали без
 статической ошибки; сфера-мишень в мире статична и без коллизий (схват её не сбивает).
 
+### Лабораторная 1.5 — сенсорные системы
+
+```bash
+roslaunch lab1_5_sensors_gazebo simulation.launch
+```
+
+В Gazebo откроется офис, в RViz будут доступны показания сенсоров. Команды для
+телеуправления, записи тем и просмотра bag-файла приведены в [инструкции к 1.5](lab1_5_sensors/README.md).
+
+### Лабораторная 1.6 — робот-пылесос
+
+```bash
+roslaunch lab1_6_animation_gazebo demo.launch
+```
+
+Команда запускает комнату, модель пылесоса и автономный обход. Назначение пакетов,
+темы и параметры запуска описаны в [инструкции к 1.6](lab1_6_animation/README.md).
+
+### Лабораторная 2.1 — движение RoboCake по линии
+
+```bash
+roslaunch lab2_1_line_following demo.launch
+```
+
+RoboCake следует по контрастной линии трассы RoboRace. Аргумент `obstacle:=true`
+добавляет препятствие. Проверка остановки и параметры ПИД-регулятора приведены в
+[инструкции к 2.1](lab2_1_line_following/README.md).
+
+### Лабораторная 2.2 — движение по циклограмме
+
+```bash
+roslaunch lab2_2_cycle demo.launch
+```
+
+RoboCake движется между зонами склада по заданным участкам с обратной связью по колёсной
+одометрии. Карта, циклограмма и темы для наблюдения описаны в [инструкции к 2.2](lab2_2_cycle/README.md).
+
+### Лабораторная 2.3 — планирование движения с A*
+
+```bash
+roslaunch lab2_3_path_planning demo.launch
+```
+
+Работа использует склад из 2.2. В RViz доступны карта склада, карта стоимостей и построенный
+путь. Запуск с другой целью и настройка отступа от препятствий описаны в
+[инструкции к 2.3](lab2_3_path_planning/README.md).
+
 ---
 
 ## 5. Возможные проблемы
@@ -327,7 +390,14 @@ DP_Labs/
 ├── lab1_3_xacro_platform/       1.3: urdf/, robots/, launch/, rviz/
 ├── lab1_4_arm_description/      1.4: urdf/ (xacro + transmission + gazebo), meshes/, launch/, rviz/
 ├── lab1_4_arm_control/          1.4: config/arm_control.yaml, launch/, scripts/cycle_motion.py
-└── lab1_4_arm_gazebo/           1.4: worlds/arm_target.world, launch/
+├── lab1_4_arm_gazebo/           1.4: worlds/arm_target.world, launch/
+├── lab1_5_sensors/              1.5: описание робота, офис, RViz и rosbag
+├── lab1_6_animation/           1.6: пылесос, комната, контроллеры и алгоритм обхода
+├── lab2_1_line_following/       2.1: движение RoboCake по трассе
+├── lab2_2_cycle/                2.2: карта и мир склада, одометрия, циклограмма
+├── lab2_3_path_planning/        2.3: карта стоимостей, A* и управление движением
+└── scripts/fetch_robocake.sh    установка внешних пакетов в src рабочего пространства
 ```
 
-Репозиторий клонируется в `src` catkin-workspace; каждая папка `lab*` — отдельный ROS-пакет.
+Репозиторий клонируется в `src` рабочего пространства Catkin. Catkin находит пакеты
+по файлам `package.xml`, в том числе внутри каталогов работ 1.5 и 1.6.

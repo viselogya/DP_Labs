@@ -1,0 +1,13 @@
+<?xml version="1.0"?>
+<package format="2">
+  <name>lab1_6_animation_description</name>
+  <version>0.1.0</version>
+  <description>Vacuum robot Xacro, range sensors and Gazebo materials.</description>
+  <maintainer email="maintainer@example.com">DP Labs</maintainer>
+  <license>MIT</license>
+  <buildtool_depend>catkin</buildtool_depend>
+  <exec_depend>gazebo_plugins</exec_depend>
+  <exec_depend>gazebo_ros_control</exec_depend>
+  <exec_depend>robot_state_publisher</exec_depend>
+  <exec_depend>xacro</exec_depend>
+</package>

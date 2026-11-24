@@ -1,0 +1,180 @@
+<?xml version="1.0"?>
+<robot name="lab15_robot" xmlns:xacro="http://www.ros.org/wiki/xacro">
+  <xacro:property name="wheel_radius" value="0.08"/>
+  <xacro:property name="wheel_track" value="0.50"/>
+  <material name="blue"><color rgba="0.15 0.36 0.68 1"/></material>
+  <material name="dark"><color rgba="0.15 0.15 0.15 1"/></material>
+  <material name="orange"><color rgba="0.95 0.52 0.10 1"/></material>
+
+  <xacro:macro name="cylinder_inertia" params="mass radius length">
+    <inertial>
+      <mass value="${mass}"/>
+      <inertia ixx="${mass*(3*radius**2+length**2)/12}" ixy="0" ixz="0"
+               iyy="${mass*(3*radius**2+length**2)/12}" iyz="0" izz="${mass*radius**2/2}"/>
+    </inertial>
+  </xacro:macro>
+
+  <link name="base_footprint"/>
+  <joint name="chassis_mount" type="fixed">
+    <parent link="base_footprint"/><child link="base_link"/>
+    <origin xyz="0 0 0.14"/>
+  </joint>
+  <link name="base_link">
+    <xacro:cylinder_inertia mass="5" radius="0.22" length="0.08"/>
+    <visual>
+      <geometry><cylinder radius="0.22" length="0.08"/></geometry>
+      <material name="blue"/>
+    </visual>
+    <collision><geometry><cylinder radius="0.22" length="0.08"/></geometry></collision>
+  </link>
+  <gazebo reference="base_link"><material>Gazebo/Blue</material></gazebo>
+
+  <!-- Each wheel cylinder spins around its local Z axis. -->
+  <xacro:macro name="wheel" params="name x y radius width rpy grip">
+    <link name="${name}_wheel">
+      <xacro:cylinder_inertia mass="0.25" radius="${radius}" length="${width}"/>
+      <visual>
+        <geometry><cylinder radius="${radius}" length="${width}"/></geometry>
+        <material name="dark"/>
+      </visual>
+      <collision><geometry><cylinder radius="${radius}" length="${width}"/></geometry></collision>
+    </link>
+    <joint name="${name}_joint" type="continuous">
+      <parent link="base_link"/><child link="${name}_wheel"/>
+      <origin xyz="${x} ${y} ${radius-0.14}" rpy="${rpy}"/>
+      <axis xyz="0 0 1"/>
+    </joint>
+    <gazebo reference="${name}_wheel">
+      <material>Gazebo/Black</material><mu1>${grip}</mu1><mu2>${grip}</mu2>
+    </gazebo>
+  </xacro:macro>
+  <xacro:wheel name="left" x="0" y="${wheel_track/2}" radius="${wheel_radius}" width="0.04" rpy="${-pi/2} 0 0" grip="1.0"/>
+  <xacro:wheel name="right" x="0" y="${-wheel_track/2}" radius="${wheel_radius}" width="0.04" rpy="${-pi/2} 0 0" grip="1.0"/>
+  <xacro:wheel name="front_support" x="0.15" y="0" radius="0.04" width="0.025" rpy="0 ${pi/2} 0" grip="0.005"/>
+  <xacro:wheel name="rear_support" x="-0.15" y="0" radius="0.04" width="0.025" rpy="0 ${pi/2} 0" grip="0.005"/>
+
+  <xacro:macro name="sensor_body" params="name xyz yaw size">
+    <joint name="${name}_mount" type="fixed">
+      <parent link="base_link"/><child link="${name}"/>
+      <origin xyz="${xyz}" rpy="0 0 ${yaw}"/>
+    </joint>
+    <link name="${name}">
+      <visual><geometry><box size="${size}"/></geometry><material name="orange"/></visual>
+    </link>
+    <gazebo reference="${name}"><material>Gazebo/Orange</material></gazebo>
+  </xacro:macro>
+
+  <xacro:macro name="sonar" params="index">
+    <xacro:property name="yaw" value="${index*pi/4}"/>
+    <xacro:property name="frame" value="sonar_${index}_link"/>
+    <xacro:property name="half_fov" value="${15*pi/180/2}"/>
+    <xacro:sensor_body name="${frame}" xyz="${0.225*cos(yaw)} ${0.225*sin(yaw)} 0.02"
+                       yaw="${yaw}" size="0.018 0.045 0.022"/>
+    <gazebo reference="${frame}">
+      <sensor name="sonar_${index}" type="ray">
+        <update_rate>10</update_rate>
+        <ray>
+          <scan>
+            <horizontal><samples>5</samples><min_angle>${-half_fov}</min_angle><max_angle>${half_fov}</max_angle></horizontal>
+            <vertical><samples>5</samples><min_angle>${-half_fov}</min_angle><max_angle>${half_fov}</max_angle></vertical>
+          </scan>
+          <range><min>0.02</min><max>4.0</max><resolution>0.003</resolution></range>
+        </ray>
+        <plugin name="sonar_${index}_ros" filename="libgazebo_ros_range.so">
+          <topicName>/lab15/sonar/${index}</topicName><frameName>${frame}</frameName>
+          <radiation>ultrasound</radiation><fov>${2*half_fov}</fov><gaussianNoise>0.003</gaussianNoise>
+        </plugin>
+      </sensor>
+    </gazebo>
+  </xacro:macro>
+  <xacro:sonar index="0"/><xacro:sonar index="1"/><xacro:sonar index="2"/><xacro:sonar index="3"/>
+  <xacro:sonar index="4"/><xacro:sonar index="5"/><xacro:sonar index="6"/><xacro:sonar index="7"/>
+
+  <link name="laser_pedestal">
+    <visual><geometry><cylinder radius="0.025" length="0.16"/></geometry><material name="dark"/></visual>
+  </link>
+  <joint name="pedestal_mount" type="fixed">
+    <parent link="base_link"/><child link="laser_pedestal"/><origin xyz="0 0 0.12"/>
+  </joint>
+  <xacro:sensor_body name="laser_link" xyz="0 0 0.23" yaw="0" size="0.06 0.06 0.06"/>
+  <gazebo reference="laser_link">
+    <sensor name="laser" type="ray">
+      <update_rate>10</update_rate>
+      <ray>
+        <scan>
+          <horizontal><samples>683</samples><resolution>1</resolution><min_angle>${-2*pi/3}</min_angle><max_angle>${2*pi/3}</max_angle></horizontal>
+        </scan>
+        <range><min>0.06</min><max>4.0</max><resolution>0.001</resolution></range>
+        <noise><type>gaussian</type><mean>0</mean><stddev>0.01</stddev></noise>
+      </ray>
+      <plugin name="laser_ros" filename="libgazebo_ros_laser.so">
+        <topicName>/lab15/scan</topicName><frameName>laser_link</frameName>
+      </plugin>
+    </sensor>
+  </gazebo>
+
+  <xacro:macro name="optical_frame" params="name parent y">
+    <link name="${name}"/>
+    <joint name="${name}_mount" type="fixed">
+      <parent link="${parent}"/><child link="${name}"/>
+      <origin xyz="0 ${y} 0" rpy="${-pi/2} 0 ${-pi/2}"/>
+    </joint>
+  </xacro:macro>
+  <xacro:macro name="camera" params="name y fov">
+    <camera name="${name}">
+      <pose>0 ${y} 0 0 0 0</pose>
+      <horizontal_fov>${fov}</horizontal_fov>
+      <image><width>640</width><height>480</height><format>R8G8B8</format></image>
+      <clip><near>0.05</near><far>20</far></clip>
+    </camera>
+  </xacro:macro>
+
+  <xacro:property name="baseline" value="0.095"/>
+  <xacro:sensor_body name="stereo_link" xyz="0.19 0 0.105" yaw="0" size="0.038 0.13 0.035"/>
+  <xacro:optical_frame name="stereo_left_optical_frame" parent="stereo_link" y="${baseline/2}"/>
+  <xacro:optical_frame name="stereo_right_optical_frame" parent="stereo_link" y="${-baseline/2}"/>
+  <gazebo reference="stereo_link">
+    <sensor name="front_stereo" type="multicamera">
+      <update_rate>15</update_rate>
+      <xacro:camera name="left" y="${baseline/2}" fov="${87*pi/180}"/>
+      <xacro:camera name="right" y="${-baseline/2}" fov="${87*pi/180}"/>
+      <plugin name="stereo_ros" filename="libgazebo_ros_multicamera.so">
+        <robotNamespace>/lab15</robotNamespace><cameraName>stereo</cameraName>
+        <imageTopicName>image_raw</imageTopicName><cameraInfoTopicName>camera_info</cameraInfoTopicName>
+        <frameName>stereo_left_optical_frame</frameName><hackBaseline>${baseline}</hackBaseline>
+      </plugin>
+    </sensor>
+  </gazebo>
+
+  <xacro:sensor_body name="rear_camera_link" xyz="-0.19 0 0.105" yaw="${pi}" size="0.035 0.06 0.035"/>
+  <xacro:optical_frame name="rear_optical_frame" parent="rear_camera_link" y="0"/>
+  <gazebo reference="rear_camera_link">
+    <sensor name="rear_camera" type="camera">
+      <update_rate>15</update_rate>
+      <xacro:camera name="rear" y="0" fov="${2*atan(0.8*tan(30*pi/180))}"/>
+      <plugin name="rear_camera_ros" filename="libgazebo_ros_camera.so">
+        <robotNamespace>/lab15</robotNamespace><cameraName>rear</cameraName>
+        <imageTopicName>image_raw</imageTopicName><cameraInfoTopicName>camera_info</cameraInfoTopicName>
+        <frameName>rear_optical_frame</frameName>
+      </plugin>
+    </sensor>
+  </gazebo>
+
+  <gazebo>
+    <plugin name="drive" filename="libgazebo_ros_diff_drive.so">
+      <robotNamespace>/lab15</robotNamespace>
+      <leftJoint>left_joint</leftJoint><rightJoint>right_joint</rightJoint>
+      <wheelSeparation>${wheel_track}</wheelSeparation><wheelDiameter>${2*wheel_radius}</wheelDiameter>
+      <wheelTorque>4</wheelTorque><wheelAcceleration>2</wheelAcceleration><updateRate>50</updateRate>
+      <commandTopic>cmd_vel</commandTopic><odometryTopic>odom</odometryTopic>
+      <odometryFrame>odom</odometryFrame><robotBaseFrame>base_footprint</robotBaseFrame>
+      <odometrySource>world</odometrySource><publishTf>true</publishTf><publishOdomTF>true</publishOdomTF>
+      <publishWheelTF>false</publishWheelTF><publishWheelJointState>false</publishWheelJointState>
+    </plugin>
+    <plugin name="wheel_states" filename="libgazebo_ros_joint_state_publisher.so">
+      <robotNamespace>/lab15</robotNamespace>
+      <jointName>left_joint,right_joint,front_support_joint,rear_support_joint</jointName>
+      <updateRate>30</updateRate>
+    </plugin>
+  </gazebo>
+</robot>

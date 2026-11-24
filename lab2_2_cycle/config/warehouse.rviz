@@ -1,0 +1,30 @@
+Panels:
+  - Class: rviz/Displays
+    Name: Displays
+Visualization Manager:
+  Class: ""
+  Global Options:
+    Fixed Frame: map
+    Background Color: 45; 49; 55
+  Displays:
+    - Class: rviz/Map
+      Name: Warehouse
+      Enabled: true
+      Topic: /map
+    - Class: rviz/RobotModel
+      Name: RoboCake Beginner
+      Enabled: true
+      Robot Description: robot_description
+    - Class: rviz/Pose
+      Name: Localized pose
+      Enabled: true
+      Topic: /warehouse/pose
+      Shape: Arrow
+      Shaft Length: 0.12
+      Head Length: 0.05
+  Views:
+    Current:
+      Class: rviz/TopDownOrtho
+      Scale: 150
+      X: 0
+      Y: 0

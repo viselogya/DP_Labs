@@ -1,0 +1,12 @@
+cost_weight: 2.0
+clearance_margin: 0.07
+waypoint_tolerance: 0.018
+max_linear: 0.12
+max_angular: 1.0
+linear_gain: 1.4
+angular_gain: 3.0
+heading_tolerance: 0.12
+stop_distance: 0.12
+resume_distance: 0.15
+range_timeout: 0.4
+odom_timeout: 0.35
